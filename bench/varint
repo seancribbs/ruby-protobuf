@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path("../../ext", __FILE__)
+
+require 'benchmark'
+
+ints = []
+100000.times do
+  ints << rand(2**62-1)
+end
+
+puts "Encoding 100,000 Fixnums"
+Benchmark.bm do |x|
+  x.report("ruby") do
+    require 'protobuf/message/field'
+    ints.each do |i|
+      Protobuf::Field::VarintField.encode(i)
+    end
+  end
+
+  x.report("c   ") do
+    require 'cprotobuf'
+    ints.each do |i|
+      Protobuf::Field::VarintField.encode(i)
+    end
+  end
+end

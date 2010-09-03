@@ -25,6 +25,15 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
+namespace :test do
+  Rake::TestTask.new(:cprotobuf) do |test|
+    test.libs << 'lib' << '.' << 'ext'
+    test.pattern = 'test/**/test_*.rb'
+    test.verbose = true
+    test.ruby_opts = ['-rcprotobuf']
+  end
+end
+
 begin
   require 'rcov/rcovtask'
   Rcov::RcovTask.new do |test|
